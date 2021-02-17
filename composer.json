@@ -1,0 +1,13 @@
+{
+    "name": "syntaxphoenix/bgpview-php",
+    "version": "0.0.1",
+    "type": "framework",
+    "autoload": {
+        "psr-4": {
+            "SyntaxPhoenix\\Api\\BGPView\\" : "src/"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "7.0"
+    }
+}
