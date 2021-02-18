@@ -1,6 +1,6 @@
 {
     "name": "syntaxphoenix/bgpview-php",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "type": "framework",
     "autoload": {
         "psr-4": {

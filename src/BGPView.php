@@ -2,6 +2,7 @@
 
 namespace SyntaxPhoenix\Api\BGPView;
 
+use Exception;
 use GuzzleHttp\Client;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
@@ -19,8 +20,10 @@ class BGPView
     private string $cacheTime;
     private float $lastRequestTimestamp = 0;
     private float $requestTimeout;
+    private int $failures;
+    private int $maxFailures;
 
-    public function __construct(string $baseUrl, float $requestTimeout = 0.4, bool $caching = false, ?string $cachingUrl = 'web/cache/bgpview', ?string $cacheTime = '10 minutes') {
+    public function __construct(string $baseUrl, float $requestTimeout = 0.4, bool $caching = false, ?string $cachingUrl = 'web/cache/bgpview', ?string $cacheTime = '10 minutes', int $maxFailures = 3) {
         if ($caching) {
             $this->createPath($cachingUrl);
             $this->storage = new FileStorage($cachingUrl);
@@ -30,6 +33,7 @@ class BGPView
         $this->caching = $caching;
         $this->cacheTime = $cacheTime;
         $this->requestTimeout = $requestTimeout;
+        $this->maxFailures = $maxFailures;
         $this->client = new Client([
             'base_uri' => $baseUrl
         ]);
@@ -84,11 +88,20 @@ class BGPView
             }
         }
         $time = microtime(true);
-        if (($this->lastRequestTimestamp + $this->requestTimeout) > $time) {
-            $restTime = $this->requestTimeout - ($time - $this->lastRequestTimestamp);
+        if ($this->lastRequestTimestamp > $time) {
+            $restTime = $this->lastRequestTimestamp - $time;
             usleep($restTime * 1000 * 1000);
         }
-        $response = $this->client->request('GET', $urlPart);
+        try {
+            $response = $this->client->request('GET', $urlPart);
+        } catch (Exception $exception) {
+            $this->failures++;
+            if ($this->failures > $this->maxFailures) {
+                throw new RequestFailedException();
+            }
+            $this->lastRequestTimestamp = microtime(true) + ($this->requestTimeout * ($this->failures + 1));
+            return $this->getDataByApi($urlPart);
+        }
         if ($response->getStatusCode() != 200) {
             throw new RequestFailedException();
         }
@@ -98,7 +111,8 @@ class BGPView
                 Cache::EXPIRE => $this->cacheTime ?? '10 minutes',
             ]);
         }
-        $this->lastRequestTimestamp = microtime(true);
+        $this->lastRequestTimestamp = microtime(true); + $this->requestTimeout;
+        $this->failures = 0;
 
         return $finalResponse;
     }
