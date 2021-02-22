@@ -64,6 +64,11 @@ class BGPView
         return $this->getDataByApi('asn/' . $asNumber . '/downstreams')['data'];
     }
 
+    public function getAsnIxs(int $asNumber): ?array
+    {
+        return $this->getDataByApi('asn/' . $asNumber . '/ixs')['data'];
+    }
+
     public function getPrefix(string $ipAddress, int $cidr): ?array
     {
         return $this->getDataByApi('prefix/' . $ipAddress . '/' . $cidr)['data'];
