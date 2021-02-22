@@ -39,47 +39,47 @@ class BGPView
         ]);
     }
 
-    public function getAsnDetails(int $asNumber): array
+    public function getAsnDetails(int $asNumber): ?array
     {
         return $this->getDataByApi('asn/' . $asNumber)['data'];
     }
 
-    public function getAsnPrefixes(int $asNumber): array
+    public function getAsnPrefixes(int $asNumber): ?array
     {
         return $this->getDataByApi('asn/' . $asNumber . '/prefixes')['data'];
     }
 
-    public function getAsnPeers(int $asNumber): array
+    public function getAsnPeers(int $asNumber): ?array
     {
         return $this->getDataByApi('asn/' . $asNumber . '/peers')['data'];
     }
 
-    public function getAsnUpstreams(int $asNumber): array
+    public function getAsnUpstreams(int $asNumber): ?array
     {
         return $this->getDataByApi('asn/' . $asNumber . '/upstreams')['data'];
     }
 
-    public function getAsnDownstreams(int $asNumber): array
+    public function getAsnDownstreams(int $asNumber): ?array
     {
         return $this->getDataByApi('asn/' . $asNumber . '/downstreams')['data'];
     }
 
-    public function getPrefix(string $ipAddress, int $cidr): array
+    public function getPrefix(string $ipAddress, int $cidr): ?array
     {
         return $this->getDataByApi('prefix/' . $ipAddress . '/' . $cidr)['data'];
     }
 
-    public function getIPDetails(string $ipAddress): array
+    public function getIPDetails(string $ipAddress): ?array
     {
         return $this->getDataByApi('ip/' . $ipAddress)['data'];
     }
 
-    public function getIXDetails(int $ixId): array
+    public function getIXDetails(int $ixId): ?array
     {
         return $this->getDataByApi('ix/' . $ixId)['data'];
     }
 
-    private function getDataByApi(string $urlPart): array
+    private function getDataByApi(string $urlPart): ?array
     {
         if ($this->caching) {
             $response = $this->cache->load($urlPart);
