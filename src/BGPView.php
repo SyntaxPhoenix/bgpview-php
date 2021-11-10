@@ -33,6 +33,7 @@ class BGPView
         $this->caching = $caching;
         $this->cacheTime = $cacheTime;
         $this->requestTimeout = $requestTimeout;
+        $this->failures = 0;
         $this->maxFailures = $maxFailures;
         $this->client = new Client([
             'base_uri' => $baseUrl
