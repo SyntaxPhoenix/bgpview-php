@@ -1,6 +1,5 @@
 {
     "name": "syntaxphoenix/bgpview-php",
-    "version": "0.0.5",
     "type": "framework",
     "autoload": {
         "psr-4": {
@@ -8,7 +7,7 @@
         }
     },
     "require": {
-        "guzzlehttp/guzzle": "7.0",
+        "guzzlehttp/guzzle": "^7.2.0",
         "nette/caching": "^3.1"
     }
 }
